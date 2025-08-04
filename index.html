@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Tongue Twister Chronicles | Jo & Mo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            min-height: 100vh;
+            color: #2D3436;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .score-card {
+            background: white;
+            border-radius: 25px;
+            padding: 20px;
+            flex: 1;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .score-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .score-card.jo {
+            border-color: #FF6B6B;
+        }
+
+        .score-card.mo {
+            border-color: #4ECDC4;
+        }
+
+        .score-card h3 {
+            color: #2D3436;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .score-card .tagline {
+            font-size: 0.8em;
+            color: #74B9FF;
+            margin-bottom: 10px;
+        }
+
+        .score-card .score {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .score-card.jo .score {
+            color: #FF6B6B;
+        }
+
+        .score-card.mo .score {
+            color: #4ECDC4;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2D3436;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #DFE6E9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #F8F9FA;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #74B9FF;
+            background: white;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .who-fumbled {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .fumbler-btn {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid #DFE6E9;
+            background: #F8F9FA;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fumbler-btn.jo {
+            color: #FF6B6B;
+        }
+
+        .fumbler-btn.mo {
+            color: #4ECDC4;
+        }
+
+        .fumbler-btn.selected.jo {
+            background: #FF6B6B;
+            color: white;
+            border-color: #FF6B6B;
+            transform: scale(1.05);
+        }
+
+        .fumbler-btn.selected.mo {
+            background: #4ECDC4;
+            color: white;
+            border-color: #4ECDC4;
+            transform: scale(1.05);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(108, 92, 231, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .recent-fumbles {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .recent-fumbles h2 {
+            color: #2D3436;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8em;
+        }
+
+        .fumble-item {
+            background: linear-gradient(135deg, #F8F9FA 0%, #F5F7FA 100%);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 0.5s ease;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .fumble-item:hover {
+            border-color: #DFE6E9;
+            transform: translateX(5px);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .fumble-item.jo::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: #FF6B6B;
+        }
+
+        .fumble-item.mo::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: #4ECDC4;
+        }
+
+        .fumble-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .fumble-who {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .fumble-item.jo .fumble-who {
+            color: #FF6B6B;
+        }
+
+        .fumble-item.mo .fumble-who {
+            color: #4ECDC4;
+        }
+
+        .fumble-date {
+            color: #B2BEC3;
+            font-size: 0.85em;
+        }
+
+        .fumble-words {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .intended-word {
+            color: #00B894;
+            font-weight: 700;
+            font-size: 1.05em;
+        }
+
+        .actual-word {
+            color: #E17055;
+            font-weight: 700;
+            font-size: 1.05em;
+        }
+
+        .fumble-story {
+            color: #636E72;
+            font-style: italic;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #DFE6E9;
+            font-size: 0.95em;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 6em;
+            z-index: 1000;
+            animation: celebrate 1.2s ease;
+            pointer-events: none;
+        }
+
+        @keyframes celebrate {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0) rotate(0deg);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.3) rotate(180deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8) rotate(360deg);
+            }
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #55EFC4 0%, #81ECEC 100%);
+            color: #00B894;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: bounceIn 0.6s ease;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(85, 239, 196, 0.3);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #B2BEC3;
+            padding: 50px 20px;
+        }
+
+        .empty-state p {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .empty-state p:first-child {
+            font-size: 1.3em;
+            color: #636E72;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .score-card {
+                padding: 15px;
+            }
+            
+            .score-card .score {
+                font-size: 2.5em;
+            }
+
+            .score-card .tagline {
+                font-size: 0.75em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Jo vs Mo: Fumble Edition 🥊</h1>
+            <p>Because someone needs to document when your brain takes a coffee break ☕</p>
+        </div>
+
+        <div class="score-board">
+            <div class="score-card jo">
+                <h3>Jo</h3>
+                <div class="tagline">The Syllable Scrambler</div>
+                <div class="score" id="joScore">0</div>
+            </div>
+            <div class="score-card mo">
+                <h3>Mo</h3>
+                <div class="tagline">The Pronunciation Pro...NOT!</div>
+                <div class="score" id="moScore">0</div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <h2 style="text-align: center; color: #2D3436; margin-bottom: 25px;">🎪 Caught Red-Tongued! 🎪</h2>
+            
+            <div id="successMessage" style="display: none;" class="success-message">
+                🏆 Another linguistic masterpiece for the archives! Dictionary companies hate this one weird trick! 🏆
+            </div>
+
+            <form id="fumbleForm">
+                <div class="who-fumbled">
+                    <button type="button" class="fumbler-btn jo" data-fumbler="Jo">Jo did it 🙈</button>
+                    <button type="button" class="fumbler-btn mo" data-fumbler="Mo">Mo's fault 🙊</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="intendedWord">The word they were AIMING for:</label>
+                    <input type="text" id="intendedWord" name="intendedWord" required placeholder="What English intended...">
+                </div>
+
+                <div class="form-group">
+                    <label for="actualWord">The beautiful DISASTER that came out:</label>
+                    <input type="text" id="actualWord" name="actualWord" required placeholder="What their mouth created...">
+                </div>
+
+                <div class="form-group">
+                    <label for="story">The crime scene details (spill the tea!):</label>
+                    <textarea id="story" name="story" placeholder="Paint us a word picture of this verbal trainwreck... Were there witnesses? Did birds fall from the sky?"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Immortalize This Fumble 📜
+                </button>
+            </form>
+        </div>
+
+        <div class="recent-fumbles">
+            <h2>Hall of Shame 🏛️</h2>
+            <div id="fumblesList">
+                <div class="empty-state">
+                    <p>The archives are empty... too empty... suspiciously empty... 🤔</p>
+                    <p>Either you two are secretly linguists or you haven't started documenting yet!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration for Google Sheets
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz9ZzTmMxNyajnCkB7d4beFJCZscbLT1c9y6t0rOGjP6FnF5hit1uRfadWfGD4CTa8m/exec';
+
+        let selectedFumbler = null;
+        let localFumbles = JSON.parse(localStorage.getItem('fumbles') || '[]');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateScores();
+            displayFumbles();
+            
+            // Handle fumbler selection
+            document.querySelectorAll('.fumbler-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.fumbler-btn').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedFumbler = this.dataset.fumbler;
+                });
+            });
+
+            // Handle form submission
+            document.getElementById('fumbleForm').addEventListener('submit', handleSubmit);
+        });
+
+        function handleSubmit(e) {
+            e.preventDefault();
+            
+            if (!selectedFumbler) {
+                alert('Uh oh! Who\'s the culprit? Pick a fumbler! 👆');
+                return;
+            }
+
+            const formData = {
+                timestamp: new Date().toISOString(),
+                who: selectedFumbler,
+                intended: document.getElementById('intendedWord').value,
+                actual: document.getElementById('actualWord').value,
+                story: document.getElementById('story').value || 'The details of this tragedy have been lost to time...'
+            };
+
+            // Save locally first
+            localFumbles.unshift(formData);
+            localStorage.setItem('fumbles', JSON.stringify(localFumbles));
+
+            // Show celebration
+            showCelebration();
+
+            // Update UI
+            updateScores();
+            displayFumbles();
+
+            // Show success message
+            const successMsg = document.getElementById('successMessage');
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 4000);
+
+            // Reset form
+            document.getElementById('fumbleForm').reset();
+            document.querySelectorAll('.fumbler-btn').forEach(b => b.classList.remove('selected'));
+            selectedFumbler = null;
+
+            // Send to Google Sheets
+            sendToGoogleSheets(formData);
+        }
+
+        function updateScores() {
+            const joCount = localFumbles.filter(f => f.who === 'Jo').length;
+            const moCount = localFumbles.filter(f => f.who === 'Mo').length;
+            
+            document.getElementById('joScore').textContent = joCount;
+            document.getElementById('moScore').textContent = moCount;
+        }
+
+        function displayFumbles() {
+            const fumblesList = document.getElementById('fumblesList');
+            
+            if (localFumbles.length === 0) {
+                fumblesList.innerHTML = `
+                    <div class="empty-state">
+                        <p>The archives are empty... too empty... suspiciously empty... 🤔</p>
+                        <p>Either you two are secretly linguists or you haven't started documenting yet!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const recentFumbles = localFumbles.slice(0, 5); // Show last 5 fumbles
+            fumblesList.innerHTML = recentFumbles.map(fumble => {
+                const date = new Date(fumble.timestamp);
+                const formattedDate = date.toLocaleDateString() + ' at ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                const whoText = fumble.who === 'Jo' ? 'Jo strikes again!' : 'Mo\'s mouth malfunctioned!';
+                
+                return `
+                    <div class="fumble-item ${fumble.who.toLowerCase()}">
+                        <div class="fumble-header">
+                            <span class="fumble-who">${whoText}</span>
+                            <span class="fumble-date">${formattedDate}</span>
+                        </div>
+                        <div class="fumble-words">
+                            Attempted: <span class="intended-word">"${fumble.intended}"</span><br>
+                            Achieved: <span class="actual-word">"${fumble.actual}"</span> 
+                            ${getRandomReaction()}
+                        </div>
+                        ${fumble.story && fumble.story !== 'The details of this tragedy have been lost to time...' ? 
+                            `<div class="fumble-story">📖 ${fumble.story}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getRandomReaction() {
+            const reactions = [
+                '(close enough? 🤷)',
+                '(nailed it! ...not)',
+                '(A for effort! 💪)',
+                '(dictionary left the chat)',
+                '(linguistics professors crying)',
+                '(autocorrect is confused)',
+                '(spell check gave up)',
+                '(Webster is shook)'
+            ];
+            return reactions[Math.floor(Math.random() * reactions.length)];
+        }
+
+        function showCelebration() {
+            const emojis = ['🎉', '🎊', '🎪', '🎭', '🏆', '✨', '🌟', '💫', '🎯', '🔥', '🎨', '🎸', '🎺', '🥳'];
+            const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            const celebration = document.createElement('div');
+            celebration.className = 'celebration';
+            celebration.textContent = emoji;
+            document.body.appendChild(celebration);
+            
+            setTimeout(() => {
+                celebration.remove();
+            }, 1200);
+        }
+
+        async function sendToGoogleSheets(data) {
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                console.log('Fumble saved to Google Sheets!');
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+                // Don't show error to user - local save already worked
+            }
+        }
+    </script>
+</body>
+</html>
