@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+let selectedFumbler = null;<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -473,14 +473,13 @@
     <script>
         // Configuration for Google Sheets
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz9ZzTmMxNyajnCkB7d4beFJCZscbLT1c9y6t0rOGjP6FnF5hit1uRfadWfGD4CTa8m/exec';
+        const SHEET_ID = '1R-brIbIxVGZyCK_STHaBzEsAl6qCuHXM9-bTxMc1S6Q';
 
-        let selectedFumbler = null;
-        let localFumbles = JSON.parse(localStorage.getItem('fumbles') || '[]');
+        let allFumbles = [];
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
-            updateScores();
-            displayFumbles();
+            loadFumblesFromSheet();
             
             // Handle fumbler selection
             document.querySelectorAll('.fumbler-btn').forEach(btn => {
@@ -494,6 +493,31 @@
             // Handle form submission
             document.getElementById('fumbleForm').addEventListener('submit', handleSubmit);
         });
+
+        // Load fumbles from Google Sheets
+        async function loadFumblesFromSheet() {
+            try {
+                // Show loading state
+                document.getElementById('fumblesList').innerHTML = '<div class="empty-state"><p>Loading fumbles from the cloud... 🌤️</p></div>';
+                
+                const response = await fetch(SCRIPT_URL);
+                const data = await response.json();
+                
+                if (data && Array.isArray(data)) {
+                    allFumbles = data.reverse(); // Reverse to show newest first
+                }
+                
+                updateScores();
+                displayFumbles();
+            } catch (error) {
+                console.error('Error loading from Sheets:', error);
+                // Fallback to local storage if Google Sheets fails
+                const localFumbles = JSON.parse(localStorage.getItem('fumbles') || '[]');
+                allFumbles = localFumbles;
+                updateScores();
+                displayFumbles();
+            }
+        }
 
         function handleSubmit(e) {
             e.preventDefault();
@@ -539,8 +563,8 @@
         }
 
         function updateScores() {
-            const joCount = localFumbles.filter(f => f.who === 'Jo').length;
-            const moCount = localFumbles.filter(f => f.who === 'Mo').length;
+            const joCount = allFumbles.filter(f => f.who === 'Jo').length;
+            const moCount = allFumbles.filter(f => f.who === 'Mo').length;
             
             document.getElementById('joScore').textContent = joCount;
             document.getElementById('moScore').textContent = moCount;
@@ -549,7 +573,7 @@
         function displayFumbles() {
             const fumblesList = document.getElementById('fumblesList');
             
-            if (localFumbles.length === 0) {
+            if (allFumbles.length === 0) {
                 fumblesList.innerHTML = `
                     <div class="empty-state">
                         <p>The archives are empty... too empty... suspiciously empty... 🤔</p>
@@ -559,7 +583,7 @@
                 return;
             }
 
-            const recentFumbles = localFumbles.slice(0, 5); // Show last 5 fumbles
+            const recentFumbles = allFumbles.slice(0, 10); // Show last 10 fumbles
             fumblesList.innerHTML = recentFumbles.map(fumble => {
                 const date = new Date(fumble.timestamp);
                 const formattedDate = date.toLocaleDateString() + ' at ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
