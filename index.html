@@ -479,11 +479,13 @@
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('App initializing...'); // Debug
             loadFumblesFromSheet();
             
             // Handle fumbler selection
             document.querySelectorAll('.fumbler-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
+                    console.log('Fumbler clicked:', this.dataset.fumbler); // Debug
                     document.querySelectorAll('.fumbler-btn').forEach(b => b.classList.remove('selected'));
                     this.classList.add('selected');
                     selectedFumbler = this.dataset.fumbler;
@@ -491,7 +493,13 @@
             });
 
             // Handle form submission
-            document.getElementById('fumbleForm').addEventListener('submit', handleSubmit);
+            const form = document.getElementById('fumbleForm');
+            if (form) {
+                form.addEventListener('submit', handleSubmit);
+                console.log('Form listener attached'); // Debug
+            } else {
+                console.error('Form not found!');
+            }
         });
 
         // Load fumbles from Google Sheets
@@ -521,6 +529,8 @@
 
         function handleSubmit(e) {
             e.preventDefault();
+            console.log('Form submitted!'); // Debug line
+            alert('Form submitted! Selected fumbler: ' + selectedFumbler); // Debug alert
             
             if (!selectedFumbler) {
                 alert('Uh oh! Who\'s the culprit? Pick a fumbler! 👆');
@@ -638,6 +648,7 @@
 
         async function sendToGoogleSheets(data) {
             try {
+                console.log('Sending to Google Sheets:', data); // Debug line
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -649,6 +660,7 @@
                 console.log('Fumble saved to Google Sheets!');
             } catch (error) {
                 console.error('Error saving to Google Sheets:', error);
+                alert('Error saving: ' + error.message); // Debug alert
                 // Don't show error to user - local save already worked
             }
         }
