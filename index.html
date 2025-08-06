@@ -480,13 +480,11 @@
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('App initializing...'); // Debug
             loadFumblesFromSheet();
             
             // Handle fumbler selection
             document.querySelectorAll('.fumbler-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    console.log('Fumbler clicked:', this.dataset.fumbler); // Debug
                     document.querySelectorAll('.fumbler-btn').forEach(b => b.classList.remove('selected'));
                     this.classList.add('selected');
                     selectedFumbler = this.dataset.fumbler;
@@ -497,9 +495,6 @@
             const form = document.getElementById('fumbleForm');
             if (form) {
                 form.addEventListener('submit', handleSubmit);
-                console.log('Form listener attached'); // Debug
-            } else {
-                console.error('Form not found!');
             }
         });
 
@@ -530,11 +525,17 @@
 
         function handleSubmit(e) {
             e.preventDefault();
-            console.log('Form submitted!'); // Debug line
-            alert('Form submitted! Selected fumbler: ' + selectedFumbler); // Debug alert
             
             if (!selectedFumbler) {
                 alert('Uh oh! Who\'s the culprit? Pick a fumbler! 👆');
+                return;
+            }
+            
+            const intendedWord = document.getElementById('intendedWord').value.trim();
+            const actualWord = document.getElementById('actualWord').value.trim();
+            
+            if (!intendedWord || !actualWord) {
+                alert('Whoa there! 🛑\n\nWe need both words:\n• What they TRIED to say\n• What actually came out\n\nCan\'t document a fumble without the evidence! 😄');
                 return;
             }
 
@@ -651,9 +652,6 @@
 
         async function sendToGoogleSheets(data) {
             try {
-                console.log('Sending to Google Sheets:', data);
-                
-                // Create form data instead of JSON
                 const formData = new FormData();
                 formData.append('data', JSON.stringify(data));
                 
@@ -662,15 +660,11 @@
                     body: formData
                 });
                 
-                const result = await response.text();
-                console.log('Response from Google Sheets:', result);
-                
                 // Reload fumbles to show the new entry
                 setTimeout(loadFumblesFromSheet, 1000);
                 
             } catch (error) {
                 console.error('Error saving to Google Sheets:', error);
-                alert('Error details: ' + error.message);
             }
         }
     </script>
