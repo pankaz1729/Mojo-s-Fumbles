@@ -651,17 +651,16 @@
                 console.log('Sending to Google Sheets:', data); // Debug line
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'text/plain',
                     },
                     body: JSON.stringify(data)
                 });
+                console.log('Response received:', response);
                 console.log('Fumble saved to Google Sheets!');
             } catch (error) {
                 console.error('Error saving to Google Sheets:', error);
                 alert('Error saving: ' + error.message); // Debug alert
-                // Don't show error to user - local save already worked
             }
         }
     </script>
