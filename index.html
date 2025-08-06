@@ -475,6 +475,7 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz9ZzTmMxNyajnCkB7d4beFJCZscbLT1c9y6t0rOGjP6FnF5hit1uRfadWfGD4CTa8m/exec';
         const SHEET_ID = '1R-brIbIxVGZyCK_STHaBzEsAl6qCuHXM9-bTxMc1S6Q';
 
+        let selectedFumbler = null;
         let allFumbles = [];
 
         // Initialize the app
@@ -545,9 +546,11 @@
                 story: document.getElementById('story').value || 'The details of this tragedy have been lost to time...'
             };
 
-            // Save locally first
-            localFumbles.unshift(formData);
-            localStorage.setItem('fumbles', JSON.stringify(localFumbles));
+            // Add to array
+            allFumbles.unshift(formData);
+
+            // Save to Google Sheets
+            sendToGoogleSheets(formData);
 
             // Show celebration
             showCelebration();
@@ -568,8 +571,8 @@
             document.querySelectorAll('.fumbler-btn').forEach(b => b.classList.remove('selected'));
             selectedFumbler = null;
 
-            // Send to Google Sheets
-            sendToGoogleSheets(formData);
+            // Save to localStorage as backup
+            localStorage.setItem('fumbles', JSON.stringify(allFumbles));
         }
 
         function updateScores() {
